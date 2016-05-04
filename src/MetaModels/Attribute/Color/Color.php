@@ -66,6 +66,7 @@ class Color extends BaseSimple
         $arrFieldDef['eval']['maxlength']      = 6;
         $arrFieldDef['eval']['size']           = 2;
         $arrFieldDef['eval']['multiple']       = true;
+        $arrFieldDef['eval']['colorpicker']    = true;
         $arrFieldDef['eval']['isHexColor']     = true;
         $arrFieldDef['eval']['decodeEntities'] = true;
         $arrFieldDef['eval']['tl_class']      .= ' wizard inline';
