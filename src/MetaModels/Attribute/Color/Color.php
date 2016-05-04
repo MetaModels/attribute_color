@@ -75,6 +75,62 @@ class Color extends BaseSimple
     }
 
     /**
+     * {@inheritdoc}
+     *
+     * This base implementation does a plain SQL sort by native value as defined by MySQL.
+     */
+    public function sortIds($idList, $strDirection)
+    {
+        $column = $this->getColName();
+        $values = $this->getMetaModel()->getServiceContainer()->getDatabase()
+            ->prepare(
+                sprintf(
+                    'SELECT id, %s FROM %s WHERE id IN (%s);',
+                    $column,
+                    $this->getMetaModel()->getTableName(),
+                    $this->parameterMask($idList)
+                )
+            )
+            ->execute($idList);
+
+        $idList = array();
+        while ($values->next()) {
+            $idList[$values->id] = $this->unserializeData($values->$column);
+        }
+
+        $sorted = $this->colorSort($idList);
+
+        return array_values($sorted);
+    }
+
+    /**
+     * Sort a list of values by color value.
+     *
+     * @param array $colors The colors to sort, indexed by item id.
+     *
+     * @return array
+     */
+    private function colorSort($colors)
+    {
+        $counter = 0;
+        $sorted  = array();
+        foreach ($colors as $itemId => $colorValue) {
+            $condensed = $colorValue[0];
+            if (strlen($condensed) == 6) {
+                $condensed = $condensed[0] . $condensed[2] . $condensed[4];
+            }
+            $colorVal = str_pad(hexdec($condensed), 5, '0', STR_PAD_LEFT);
+            $colorSat = str_pad($colorValue[1], 3, '0', STR_PAD_LEFT);
+
+            $sorted['_'.$colorVal . $colorSat . $counter] = $itemId;
+            $counter++;
+        }
+
+        ksort($sorted);
+        return $sorted;
+    }
+
+    /**
      * Take the raw data from the DB column and unserialize it.
      *
      * @param string $value The input value.
