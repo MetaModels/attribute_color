@@ -73,4 +73,36 @@ class Color extends BaseSimple
 
         return $arrFieldDef;
     }
+
+    /**
+     * Take the raw data from the DB column and unserialize it.
+     *
+     * @param string $value The input value.
+     *
+     * @return array
+     */
+    public function unserializeData($value)
+    {
+        if (null === $value) {
+            return array('', '');
+        }
+
+        return unserialize($value);
+    }
+
+    /**
+     * Take the unserialized data and serialize it for the native DB column.
+     *
+     * @param array $value The input value.
+     *
+     * @return string
+     */
+    public function serializeData($value)
+    {
+        if (!($value[0] || $value[1])) {
+            return null;
+        }
+
+        return serialize($value);
+    }
 }
