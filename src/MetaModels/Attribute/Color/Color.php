@@ -16,6 +16,7 @@
  * @author     Andreas Isaak <info@andreas-isaak.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Cliff Parnitzky <github@cliff-parnitzky.de>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @copyright  2012-2016 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0
  * @filesource
@@ -98,7 +99,7 @@ class Color extends BaseSimple
             $idList[$values->id] = $this->unserializeData($values->$column);
         }
 
-        $sorted = $this->colorSort($idList);
+        $sorted = $this->colorSort($idList, $strDirection);
 
         return array_values($sorted);
     }
@@ -110,12 +111,17 @@ class Color extends BaseSimple
      *
      * @return array
      */
-    private function colorSort($colors)
+    private function colorSort($colors, $strDirection)
     {
-        $counter = 0;
-        $sorted  = array();
+        $counter  = 0;
+        $sorted   = array();
+        $unsorted = array();
         foreach ($colors as $itemId => $colorValue) {
             $condensed = $colorValue[0];
+            if ($condensed == '') {
+                $unsorted[$itemId] = $itemId;
+                continue;
+            }
             if (strlen($condensed) == 6) {
                 $condensed = $condensed[0] . $condensed[2] . $condensed[4];
             }
@@ -126,8 +132,13 @@ class Color extends BaseSimple
             $counter++;
         }
 
-        ksort($sorted);
-        return $sorted;
+        if ($strDirection === 'desc') {
+            krsort($sorted);
+        } else {
+            ksort($sorted);
+        }
+
+        return array_merge($sorted, $unsorted);
     }
 
     /**
