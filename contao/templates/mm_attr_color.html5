@@ -1,1 +1,3 @@
-<span class="text<?php echo $this->additional_class; ?>"><?php echo $this->raw; ?></span>
+<span class="text<?php echo $this->additional_class; ?>">
+    <?php echo $this->raw[0]; ?> <?php echo $this->raw[1]; ?>
+</span>
