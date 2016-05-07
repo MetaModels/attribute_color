@@ -143,7 +143,7 @@ class Color extends BaseSimple
             return array('', '');
         }
 
-        return unserialize($value);
+        return is_array($value) ? $value : unserialize($value);
     }
 
     /**
