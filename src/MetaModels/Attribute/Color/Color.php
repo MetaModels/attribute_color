@@ -157,7 +157,7 @@ class Color extends BaseSimple
     /**
      * Take the raw data from the DB column and unserialize it.
      *
-     * @param string $value The input value.
+     * @param string|null $value The input value.
      *
      * @return array
      */
@@ -175,7 +175,7 @@ class Color extends BaseSimple
      *
      * @param array $value The input value.
      *
-     * @return string
+     * @return string|null
      */
     public function serializeData($value)
     {
