@@ -115,19 +115,36 @@ class Color extends BaseSimple
         $counter = 0;
         $sorted  = array();
         foreach ($colors as $itemId => $colorValue) {
-            $condensed = $colorValue[0];
-            if (strlen($condensed) == 6) {
-                $condensed = $condensed[0] . $condensed[2] . $condensed[4];
-            }
-            $colorVal = str_pad(hexdec($condensed), 5, '0', STR_PAD_LEFT);
+            $colorVal = $this->convertColorToSortValue($colorValue[0]);
             $colorSat = str_pad($colorValue[1], 3, '0', STR_PAD_LEFT);
 
-            $sorted['_'.$colorVal . $colorSat . $counter] = $itemId;
+            $sorted['_' . $colorVal . $colorSat . $counter] = $itemId;
             $counter++;
         }
 
         ksort($sorted);
         return $sorted;
+    }
+
+    /**
+     * Convert a color code to a sort value.
+     *
+     * @param string $colorValue The color value to convert.
+     *
+     * @return string
+     */
+    private function convertColorToSortValue($colorValue)
+    {
+        // Space is ASC 0x20 and is before '0' (which has ASC 0x30)
+        if (strlen($colorValue) == 0) {
+            return '     ';
+        }
+
+        if (strlen($colorValue) == 6) {
+            $colorValue = $colorValue[0] . $colorValue[2] . $colorValue[4];
+        }
+
+        return str_pad(hexdec($colorValue), 5, '0', STR_PAD_LEFT);
     }
 
     /**
