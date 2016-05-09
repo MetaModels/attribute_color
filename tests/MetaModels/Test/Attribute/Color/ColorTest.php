@@ -231,4 +231,39 @@ class ColorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $color->sortIds($ids, 'ASC'));
     }
+
+    /**
+     * Test the sorting function in decending order.
+     *
+     * @param array $expected The expected result order.
+     *
+     * @param array $data     The array to sort.
+     *
+     * @return void
+     *
+     * @dataProvider provideSortArray
+     */
+    public function testSortDesc($expected, $data)
+    {
+        $ids = array();
+        foreach ($data as $item) {
+            $ids[] = $item['id'];
+        }
+
+        $metaModel = $this->mockMetaModel(
+            'en',
+            'en',
+            $this->mockDatabase(
+                sprintf(
+                    'SELECT id, color FROM mm_unittest WHERE id IN (%s);',
+                    implode(',', array_fill(0, count($ids), '?'))
+                ),
+                $data
+            )
+        );
+
+        $color = new Color($metaModel, array('colname' => 'color'));
+
+        $this->assertEquals(array_reverse($expected), $color->sortIds($ids, 'DESC'));
+    }
 }

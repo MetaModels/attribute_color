@@ -98,7 +98,7 @@ class Color extends BaseSimple
             $idList[$values->id] = $this->unserializeData($values->$column);
         }
 
-        $sorted = $this->colorSort($idList);
+        $sorted = $this->colorSort($idList, ('DESC' === $strDirection));
 
         return array_values($sorted);
     }
@@ -106,11 +106,13 @@ class Color extends BaseSimple
     /**
      * Sort a list of values by color value.
      *
-     * @param array $colors The colors to sort, indexed by item id.
+     * @param array $colors     The colors to sort, indexed by item id.
+     *
+     * @param bool  $descending The sort direction, true if descending, false if ascending.
      *
      * @return array
      */
-    private function colorSort($colors)
+    private function colorSort($colors, $descending)
     {
         $counter = 0;
         $sorted  = array();
@@ -122,7 +124,12 @@ class Color extends BaseSimple
             $counter++;
         }
 
-        ksort($sorted);
+        if ($descending) {
+            krsort($sorted);
+        } else {
+            ksort($sorted);
+        }
+
         return $sorted;
     }
 
