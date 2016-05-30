@@ -1,20 +1,23 @@
 <?php
+
 /**
- * The MetaModels extension allows the creation of multiple collections of custom items,
- * each with its own unique set of selectable attributes, with attribute extendability.
- * The Front-End modules allow you to build powerful listing and filtering of the
- * data in each collection.
+ * This file is part of MetaModels/attribute_color.
  *
- * PHP version 5
+ * (c) 2012-2016 The MetaModels team.
  *
- * @package     MetaModels
- * @subpackage  AttributeColor
- * @author      Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @author      Andreas Isaak <info@andreas-isaak.de>
- * @author      Stefan Heimes <stefan_heimes@hotmail.com>
- * @author      Cliff Parnitzky <github@cliff-parnitzky.de>
- * @copyright   The MetaModels team.
- * @license     LGPL.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * This project is provided in good faith and hope to be usable by anyone.
+ *
+ * @package    MetaModels
+ * @subpackage AttributeColor
+ * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
+ * @author     Andreas Isaak <info@andreas-isaak.de>
+ * @author     Stefan Heimes <stefan_heimes@hotmail.com>
+ * @author     Cliff Parnitzky <github@cliff-parnitzky.de>
+ * @copyright  2012-2016 The MetaModels team.
+ * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
@@ -24,10 +27,6 @@ use MetaModels\Attribute\BaseSimple;
 
 /**
  * This is the MetaModelAttribute class for handling color fields.
- *
- * @package    MetaModels
- * @subpackage AttributeColor
- * @author     Stefan Heimes <cms@men-at-work.de>
  */
 class Color extends BaseSimple
 {
@@ -67,10 +66,123 @@ class Color extends BaseSimple
         $arrFieldDef['eval']['maxlength']      = 6;
         $arrFieldDef['eval']['size']           = 2;
         $arrFieldDef['eval']['multiple']       = true;
+        $arrFieldDef['eval']['colorpicker']    = true;
         $arrFieldDef['eval']['isHexColor']     = true;
         $arrFieldDef['eval']['decodeEntities'] = true;
         $arrFieldDef['eval']['tl_class']      .= ' wizard inline';
 
         return $arrFieldDef;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * This base implementation does a plain SQL sort by native value as defined by MySQL.
+     */
+    public function sortIds($idList, $strDirection)
+    {
+        $column = $this->getColName();
+        $values = $this->getMetaModel()->getServiceContainer()->getDatabase()
+            ->prepare(
+                sprintf(
+                    'SELECT id, %s FROM %s WHERE id IN (%s);',
+                    $column,
+                    $this->getMetaModel()->getTableName(),
+                    $this->parameterMask($idList)
+                )
+            )
+            ->execute($idList);
+
+        $idList = array();
+        while ($values->next()) {
+            $idList[$values->id] = $this->unserializeData($values->$column);
+        }
+
+        $sorted = $this->colorSort($idList, ('DESC' === $strDirection));
+
+        return array_values($sorted);
+    }
+
+    /**
+     * Sort a list of values by color value.
+     *
+     * @param array $colors     The colors to sort, indexed by item id.
+     *
+     * @param bool  $descending The sort direction, true if descending, false if ascending.
+     *
+     * @return array
+     */
+    private function colorSort($colors, $descending)
+    {
+        $counter = 0;
+        $sorted  = array();
+        foreach ($colors as $itemId => $colorValue) {
+            $colorVal = $this->convertColorToSortValue($colorValue[0]);
+            $colorSat = str_pad($colorValue[1], 3, '0', STR_PAD_LEFT);
+
+            $sorted['_' . $colorVal . $colorSat . $counter] = $itemId;
+            $counter++;
+        }
+
+        if ($descending) {
+            krsort($sorted);
+        } else {
+            ksort($sorted);
+        }
+
+        return $sorted;
+    }
+
+    /**
+     * Convert a color code to a sort value.
+     *
+     * @param string $colorValue The color value to convert.
+     *
+     * @return string
+     */
+    private function convertColorToSortValue($colorValue)
+    {
+        // Space is ASC 0x20 and is before '0' (which has ASC 0x30)
+        if (strlen($colorValue) == 0) {
+            return '     ';
+        }
+
+        if (strlen($colorValue) == 6) {
+            $colorValue = $colorValue[0] . $colorValue[2] . $colorValue[4];
+        }
+
+        return str_pad(hexdec($colorValue), 5, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Take the raw data from the DB column and unserialize it.
+     *
+     * @param string|null $value The input value.
+     *
+     * @return array
+     */
+    public function unserializeData($value)
+    {
+        if (null === $value) {
+            return array('', '');
+        }
+
+        return unserialize($value);
+    }
+
+    /**
+     * Take the unserialized data and serialize it for the native DB column.
+     *
+     * @param array $value The input value.
+     *
+     * @return string|null
+     */
+    public function serializeData($value)
+    {
+        if (!($value[0] || $value[1])) {
+            return null;
+        }
+
+        return serialize($value);
     }
 }
