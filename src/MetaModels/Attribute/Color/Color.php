@@ -16,6 +16,7 @@
  * @author     Andreas Isaak <info@andreas-isaak.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Cliff Parnitzky <github@cliff-parnitzky.de>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @copyright  2012-2016 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0
  * @filesource
@@ -167,7 +168,7 @@ class Color extends BaseSimple
             return array('', '');
         }
 
-        return unserialize($value);
+        return is_array($value) ? $value : unserialize($value);
     }
 
     /**
