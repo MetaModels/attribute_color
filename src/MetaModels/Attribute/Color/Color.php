@@ -16,6 +16,7 @@
  * @author     Andreas Isaak <info@andreas-isaak.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Cliff Parnitzky <github@cliff-parnitzky.de>
+ * @author     Ingolf Steinhardt <info@e-spin.de>
  * @copyright  2012-2016 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0
  * @filesource
@@ -66,7 +67,7 @@ class Color extends BaseSimple
         $arrFieldDef['eval']['maxlength']      = 6;
         $arrFieldDef['eval']['size']           = 2;
         $arrFieldDef['eval']['multiple']       = true;
-        $arrFieldDef['eval']['colorpicker']    = true;
+        $arrFieldDef['eval']['colorpicker']    = empty($arrFieldDef['eval']['readonly']);
         $arrFieldDef['eval']['isHexColor']     = true;
         $arrFieldDef['eval']['decodeEntities'] = true;
         $arrFieldDef['eval']['tl_class']      .= ' wizard inline';
