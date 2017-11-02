@@ -21,17 +21,19 @@
 
 namespace MetaModels\Test\Attribute\Color;
 
+use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\IAttributeTypeFactory;
 use MetaModels\Attribute\Color\AttributeTypeFactory;
+use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
-use MetaModels\Test\Attribute\AttributeTypeFactoryTest;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test the attribute factory.
  *
  * @package MetaModels\Test\Filter\Setting
  */
-class ColorAttributeTypeFactoryTest extends AttributeTypeFactoryTest
+class ColorAttributeTypeFactoryTest extends TestCase
 {
     /**
      * Mock a MetaModel.
@@ -46,11 +48,7 @@ class ColorAttributeTypeFactoryTest extends AttributeTypeFactoryTest
      */
     protected function mockMetaModel($tableName, $language, $fallbackLanguage)
     {
-        $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
-            array(),
-            array(array())
-        );
+        $metaModel = $this->getMockForAbstractClass('MetaModels\IMetaModel');
 
         $metaModel
             ->expects($this->any())
@@ -71,13 +69,42 @@ class ColorAttributeTypeFactoryTest extends AttributeTypeFactoryTest
     }
 
     /**
+     * Mock the database connection.
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject|Connection
+     */
+    private function mockConnection()
+    {
+        return $this->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
+     * Mock the table manipulator.
+     *
+     * @param Connection $connection The database connection mock.
+     *
+     * @return TableManipulator|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function mockTableManipulator(Connection $connection)
+    {
+        return $this->getMockBuilder(TableManipulator::class)
+            ->setConstructorArgs([$connection, []])
+            ->getMock();
+    }
+
+    /**
      * Override the method to run the tests on the attribute factories to be tested.
      *
      * @return IAttributeTypeFactory[]
      */
     protected function getAttributeFactories()
     {
-        return array(new AttributeTypeFactory());
+        $connection  = $this->mockConnection();
+        $manipulator = $this->mockTableManipulator($connection);
+
+        return array(new AttributeTypeFactory($connection, $manipulator));
     }
 
     /**
@@ -87,7 +114,10 @@ class ColorAttributeTypeFactoryTest extends AttributeTypeFactoryTest
      */
     public function testCreateSelect()
     {
-        $factory   = new AttributeTypeFactory();
+        $connection  = $this->mockConnection();
+        $manipulator = $this->mockTableManipulator($connection);
+
+        $factory   = new AttributeTypeFactory($connection, $manipulator);
         $attribute = $factory->createInstance(
             array(),
             $this->mockMetaModel('mm_test', 'de', 'en')

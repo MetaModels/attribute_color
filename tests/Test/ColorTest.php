@@ -21,100 +21,18 @@
 
 namespace MetaModels\Test\Attribute\Color;
 
-use Contao\Database;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Query\QueryBuilder;
 use MetaModels\Attribute\Color\Color;
-use MetaModels\MetaModelsServiceContainer;
+use MetaModels\Helper\TableManipulator;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests to test class Color.
  */
-class ColorTest extends \PHPUnit_Framework_TestCase
+class ColorTest extends TestCase
 {
-    /**
-     * Mock the Contao database.
-     *
-     * @param string     $expectedQuery The query to expect.
-     *
-     * @param null|array $result        The resulting datasets.
-     *
-     * @return Database|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private function mockDatabase($expectedQuery = '', $result = null)
-    {
-        $mockDb = $this
-            ->getMockBuilder('Contao\Database')
-            ->disableOriginalConstructor()
-            ->setMethods(array('__destruct'))
-            ->getMockForAbstractClass();
-
-        $mockDb->method('createStatement')->willReturn(
-            $statement = $this
-                ->getMockBuilder('Contao\Database\Statement')
-                ->disableOriginalConstructor()
-                ->setMethods(array('debugQuery', 'createResult'))
-                ->getMockForAbstractClass()
-        );
-
-        if (!$expectedQuery) {
-            $statement->expects($this->never())->method('prepare_query');
-
-            return $mockDb;
-        }
-
-        $statement
-            ->expects($this->once())
-            ->method('prepare_query')
-            ->with($expectedQuery)
-            ->willReturnArgument(0);
-
-        if ($result === null) {
-            $result = array('ignored');
-        } else {
-            $result = (object) $result;
-        }
-
-        $statement->method('execute_query')->willReturn($result);
-        $statement->method('createResult')->willReturnCallback(
-            function ($resultData) {
-                $index = 0;
-
-                $resultData = (array) $resultData;
-
-                $resultSet = $this
-                    ->getMockBuilder('Contao\Database\Result')
-                    ->disableOriginalConstructor()
-                    ->getMockForAbstractClass();
-
-                $resultSet->method('fetch_row')->willReturnCallback(function () use (&$index, $resultData) {
-                    return array_values($resultData[$index++]);
-                });
-                $resultSet->method('fetch_assoc')->willReturnCallback(function () use (&$index, $resultData) {
-                    if (!isset($resultData[$index])) {
-                        return false;
-                    }
-                    return $resultData[$index++];
-                });
-                $resultSet->method('num_rows')->willReturnCallback(function () use ($index, $resultData) {
-                    return count($resultData);
-                });
-                $resultSet->method('num_fields')->willReturnCallback(function () use ($index, $resultData) {
-                    return count($resultData[$index]);
-                });
-                $resultSet->method('fetch_field')->willReturnCallback(function ($field) use ($index, $resultData) {
-                    $data = array_values($resultData[$index]);
-                    return $data[$field];
-                });
-                $resultSet->method('data_seek')->willReturnCallback(function ($newIndex) use (&$index, $resultData) {
-                    $index = $newIndex;
-                });
-
-                return $resultSet;
-            }
-        );
-
-        return $mockDb;
-    }
-
     /**
      * Mock a MetaModel.
      *
@@ -122,17 +40,11 @@ class ColorTest extends \PHPUnit_Framework_TestCase
      *
      * @param string   $fallbackLanguage The fallback language.
      *
-     * @param Database $database         The database to use.
-     *
      * @return \MetaModels\IMetaModel
      */
-    protected function mockMetaModel($language, $fallbackLanguage, $database)
+    protected function mockMetaModel($language, $fallbackLanguage)
     {
-        $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
-            array(),
-            array(array())
-        );
+        $metaModel = $this->getMockForAbstractClass('MetaModels\IMetaModel');
 
         $metaModel
             ->expects($this->any())
@@ -149,14 +61,33 @@ class ColorTest extends \PHPUnit_Framework_TestCase
             ->method('getFallbackLanguage')
             ->will($this->returnValue($fallbackLanguage));
 
-        $serviceContainer = new MetaModelsServiceContainer();
-        $serviceContainer->setDatabase($database);
-
-        $metaModel
-            ->method('getServiceContainer')
-            ->willReturn($serviceContainer);
-
         return $metaModel;
+    }
+
+    /**
+     * Mock the database connection.
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject|Connection
+     */
+    private function mockConnection()
+    {
+        return $this->getMockBuilder(Connection::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
+     * Mock the table manipulator.
+     *
+     * @param Connection $connection The database connection mock.
+     *
+     * @return TableManipulator|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private function mockTableManipulator(Connection $connection)
+    {
+        return $this->getMockBuilder(TableManipulator::class)
+            ->setConstructorArgs([$connection, []])
+            ->getMock();
     }
 
     /**
@@ -166,7 +97,10 @@ class ColorTest extends \PHPUnit_Framework_TestCase
      */
     public function testInstantiation()
     {
-        $text = new Color($this->mockMetaModel('en', 'en', $this->mockDatabase()));
+        $connection  = $this->mockConnection();
+        $manipulator = $this->mockTableManipulator($connection);
+
+        $text = new Color($this->mockMetaModel('en', 'en'), [], $connection, $manipulator);
         $this->assertInstanceOf('MetaModels\Attribute\Color\Color', $text);
     }
 
@@ -212,23 +146,39 @@ class ColorTest extends \PHPUnit_Framework_TestCase
     public function testSortAsc($expected, $data)
     {
         $ids = array();
+        $return = array();
         foreach ($data as $item) {
             $ids[] = $item['id'];
+            $return[] = (object) $item;
         }
 
-        $metaModel = $this->mockMetaModel(
-            'en',
-            'en',
-            $this->mockDatabase(
-                sprintf(
-                    'SELECT id, color FROM mm_unittest WHERE id IN (%s);',
-                    implode(',', array_fill(0, count($ids), '?'))
-                ),
-                $data
-            )
-        );
+        $metaModel    = $this->mockMetaModel('en', 'en');
+        $connection   = $this->mockConnection();
+        $manipulator  = $this->mockTableManipulator($connection);
+        $queryBuilder = $this->getMockBuilder(QueryBuilder::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $color = new Color($metaModel, array('colname' => 'color'));
+        $connection
+            ->expects($this->once())
+            ->method('createQueryBuilder')
+            ->willReturn($queryBuilder);
+
+        $statement = $this->getMockBuilder(Statement::class)->getMock();
+        $statement->method('fetch')->willReturnOnConsecutiveCalls(...$return);
+
+        $queryBuilder
+            ->expects($this->once())
+            ->method('execute')
+            ->willReturn($statement);
+
+        foreach (['select', 'addSelect', 'from', 'setParameter', 'where'] as $method) {
+            $queryBuilder
+                ->method($method)
+                ->willReturn($queryBuilder);
+        }
+
+        $color = new Color($metaModel, array('colname' => 'color'), $connection, $manipulator);
 
         $this->assertEquals($expected, $color->sortIds($ids, 'ASC'));
     }
@@ -249,21 +199,36 @@ class ColorTest extends \PHPUnit_Framework_TestCase
         $ids = array();
         foreach ($data as $item) {
             $ids[] = $item['id'];
+            $return[] = (object) $item;
         }
 
-        $metaModel = $this->mockMetaModel(
-            'en',
-            'en',
-            $this->mockDatabase(
-                sprintf(
-                    'SELECT id, color FROM mm_unittest WHERE id IN (%s);',
-                    implode(',', array_fill(0, count($ids), '?'))
-                ),
-                $data
-            )
-        );
+        $metaModel    = $this->mockMetaModel('en', 'en');
+        $connection   = $this->mockConnection();
+        $manipulator  = $this->mockTableManipulator($connection);
+        $queryBuilder = $this->getMockBuilder(QueryBuilder::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $color = new Color($metaModel, array('colname' => 'color'));
+        $connection
+            ->expects($this->once())
+            ->method('createQueryBuilder')
+            ->willReturn($queryBuilder);
+
+        $statement = $this->getMockBuilder(Statement::class)->getMock();
+        $statement->method('fetch')->willReturnOnConsecutiveCalls(...$return);
+
+        $queryBuilder
+            ->expects($this->once())
+            ->method('execute')
+            ->willReturn($statement);
+
+        foreach (['select', 'addSelect', 'from', 'setParameter', 'where'] as $method) {
+            $queryBuilder
+                ->method($method)
+                ->willReturn($queryBuilder);
+        }
+
+        $color = new Color($metaModel, array('colname' => 'color'), $connection, $manipulator);
 
         $this->assertEquals(array_reverse($expected), $color->sortIds($ids, 'DESC'));
     }
