@@ -50,8 +50,8 @@
     }
   },
   "autoload-dev": {
-    "psr-0": {
-      "MetaModels\\Attribute\\Color\\Test\\": "tests/Test"
+    "psr-4": {
+      "MetaModels\\Test\\Attribute\\Color\\": "tests/Test"
     }
   },
   "extra": {
