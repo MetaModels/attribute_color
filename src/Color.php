@@ -83,20 +83,17 @@ class Color extends BaseSimple
      */
     public function sortIds($idList, $strDirection)
     {
-        $column = $this->getColName();
-        $values = $this->getMetaModel()->getServiceContainer()->getDatabase()
-            ->prepare(
-                sprintf(
-                    'SELECT id, %s FROM %s WHERE id IN (%s);',
-                    $column,
-                    $this->getMetaModel()->getTableName(),
-                    $this->parameterMask($idList)
-                )
-            )
-            ->execute($idList);
+        $column    = $this->getColName();
+        $statement = $this->connection->createQueryBuilder()
+            ->select('id')
+            ->addSelect($column)
+            ->from($this->getMetaModel()->getTableName())
+            ->where('id IN (:ids)')
+            ->setParameter('ids', $idList)
+            ->execute();
 
         $idList = array();
-        while ($values->next()) {
+        while ($values = $statement->fetch(\PDO::FETCH_OBJ)) {
             $idList[$values->id] = $this->unserializeData($values->$column);
         }
 
