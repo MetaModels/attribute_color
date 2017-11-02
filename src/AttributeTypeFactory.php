@@ -21,19 +21,21 @@
 
 namespace MetaModels\Attribute\Color;
 
-use MetaModels\Attribute\AbstractAttributeTypeFactory;
+use Doctrine\DBAL\Connection;
+use MetaModels\Attribute\AbstractSimpleAttributeTypeFactory;
+use MetaModels\Helper\TableManipulator;
 
 /**
  * Attribute type factory for color attributes.
  */
-class AttributeTypeFactory extends AbstractAttributeTypeFactory
+class AttributeTypeFactory extends AbstractSimpleAttributeTypeFactory
 {
     /**
      * {@inheritDoc}
      */
-    public function __construct()
+    public function __construct(Connection $connection, TableManipulator $tableManipulator)
     {
-        parent::__construct();
+        parent::__construct($connection, $tableManipulator);
 
         $this->typeName  = 'color';
         $this->typeIcon  = 'bundles/metamodelsattributecolor/color.png';
