@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_color.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2017 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,13 +13,14 @@
  * @package    MetaModels
  * @subpackage AttributeColor
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @author     Stefan Heimes <cms@men-at-work.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Andreas Isaak <info@andreas-isaak.de>
+ * @author     David Molineus <david.molineus@netzmacht.de>
+ * @copyright  2012-2017 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
 
-/**
- * Fields
- */
-$GLOBALS['TL_LANG']['tl_metamodel_attribute']['typeOptions']['color'] = 'Color picker';
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['color extends _simpleattribute_'] = array
+(
+    '-advanced' => array('isunique')
+);

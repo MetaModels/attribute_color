@@ -36,7 +36,7 @@ class AttributeTypeFactory extends AbstractAttributeTypeFactory
         parent::__construct();
 
         $this->typeName  = 'color';
-        $this->typeIcon  = 'system/modules/metamodelsattribute_color/html/color.png';
+        $this->typeIcon  = 'bundles/metamodelsattributecolor/color.png';
         $this->typeClass = 'MetaModels\Attribute\Color\Color';
     }
 }
