@@ -18,10 +18,10 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Attribute\Color\DependencyInjection;
+namespace MetaModels\AttributeColorBundle\Test\DependencyInjection;
 
-use MetaModels\Attribute\Color\AttributeTypeFactory;
-use MetaModels\Attribute\Color\DependencyInjection\MetaModelsAttributeColorExtension;
+use MetaModels\AttributeColorBundle\Attribute\AttributeTypeFactory;
+use MetaModels\AttributeColorBundle\DependencyInjection\MetaModelsAttributeColorExtension;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;

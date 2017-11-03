@@ -19,12 +19,12 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Attribute\Color;
+namespace MetaModels\AttributeColorBundle\Test\Attribute;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Query\QueryBuilder;
-use MetaModels\Attribute\Color\Color;
+use MetaModels\AttributeColorBundle\Attribute\Color;
 use MetaModels\Helper\TableManipulator;
 use PHPUnit\Framework\TestCase;
 
@@ -101,7 +101,7 @@ class ColorTest extends TestCase
         $manipulator = $this->mockTableManipulator($connection);
 
         $text = new Color($this->mockMetaModel('en', 'en'), [], $connection, $manipulator);
-        $this->assertInstanceOf('MetaModels\Attribute\Color\Color', $text);
+        $this->assertInstanceOf(Color::class, $text);
     }
 
     /**

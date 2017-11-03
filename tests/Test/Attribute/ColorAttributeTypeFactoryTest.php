@@ -19,11 +19,12 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Attribute\Color;
+namespace MetaModels\AttributeColorBundle\Test\Attribute;
 
 use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\IAttributeTypeFactory;
-use MetaModels\Attribute\Color\AttributeTypeFactory;
+use MetaModels\AttributeColorBundle\Attribute\AttributeTypeFactory;
+use MetaModels\AttributeColorBundle\Attribute\Color;
 use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
 use PHPUnit\Framework\TestCase;
@@ -123,6 +124,6 @@ class ColorAttributeTypeFactoryTest extends TestCase
             $this->mockMetaModel('mm_test', 'de', 'en')
         );
 
-        $this->assertInstanceOf('MetaModels\Attribute\Color\Color', $attribute);
+        $this->assertInstanceOf(Color::class, $attribute);
     }
 }

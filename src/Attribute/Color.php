@@ -23,7 +23,7 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Color;
+namespace MetaModels\AttributeColorBundle\Attribute;
 
 use MetaModels\Attribute\BaseSimple;
 

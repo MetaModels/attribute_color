@@ -18,12 +18,12 @@
  * @filesource
  */
 
-namespace MetaModels\Test\Attribute\Color\ContaoManager;
+namespace MetaModels\AttributeColorBundle\Test\ContaoManager;
 
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
-use MetaModels\Attribute\Color\ContaoManager\Plugin;
+use MetaModels\AttributeColorBundle\ContaoManager\Plugin;
 use MetaModels\CoreBundle\MetaModelsCoreBundle;
 use PHPUnit\Framework\TestCase;
 

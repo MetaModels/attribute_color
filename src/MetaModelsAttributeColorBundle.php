@@ -22,7 +22,7 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Color;
+namespace MetaModels\AttributeColorBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

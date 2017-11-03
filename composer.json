@@ -46,16 +46,19 @@
   },
   "autoload": {
     "psr-4": {
-      "MetaModels\\Attribute\\Color\\": "src"
-    }
+      "MetaModels\\AttributeColorBundle\\": "src"
+    },
+    "files": [
+      "src/deprecated-autoload.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
-      "MetaModels\\Test\\Attribute\\Color\\": "tests/Test"
+      "MetaModels\\AttributeColorBundle\\Test\\": "tests/Test"
     }
   },
   "extra": {
-    "contao-manager-plugin": "MetaModels\\Attribute\\Color\\ContaoManager\\Plugin",
+    "contao-manager-plugin": "MetaModels\\AttributeColorBundle\\ContaoManager\\Plugin",
     "contao": {
       "transifex": {
         "project": "metamodels",

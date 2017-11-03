@@ -19,7 +19,7 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Color;
+namespace MetaModels\AttributeColorBundle\Attribute;
 
 use Doctrine\DBAL\Connection;
 use MetaModels\Attribute\AbstractSimpleAttributeTypeFactory;

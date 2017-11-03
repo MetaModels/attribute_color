@@ -18,7 +18,7 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Color\DependencyInjection;
+namespace MetaModels\AttributeColorBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
