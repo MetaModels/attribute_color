@@ -23,11 +23,12 @@ namespace MetaModels\Test\Attribute\Color;
 use Contao\Database;
 use MetaModels\Attribute\Color\Color;
 use MetaModels\MetaModelsServiceContainer;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests to test class Color.
  */
-class ColorTest extends \PHPUnit_Framework_TestCase
+class ColorTest extends TestCase
 {
     /**
      * Mock the Contao database.
@@ -127,11 +128,7 @@ class ColorTest extends \PHPUnit_Framework_TestCase
      */
     protected function mockMetaModel($language, $fallbackLanguage, $database)
     {
-        $metaModel = $this->getMock(
-            'MetaModels\MetaModel',
-            array(),
-            array(array())
-        );
+        $metaModel = $this->getMockBuilder('MetaModels\IMetaModel')->getMockForAbstractClass();
 
         $metaModel
             ->expects($this->any())
