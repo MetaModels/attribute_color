@@ -90,7 +90,7 @@ class ColorTest extends TestCase
                     ->getMockForAbstractClass();
 
                 $resultSet->method('fetch_row')->willReturnCallback(function () use (&$index, $resultData) {
-                    return array_values($resultData[$index++]);
+                    return \array_values($resultData[$index++]);
                 });
                 $resultSet->method('fetch_assoc')->willReturnCallback(function () use (&$index, $resultData) {
                     if (!isset($resultData[$index])) {
@@ -99,13 +99,13 @@ class ColorTest extends TestCase
                     return $resultData[$index++];
                 });
                 $resultSet->method('num_rows')->willReturnCallback(function () use ($index, $resultData) {
-                    return count($resultData);
+                    return \count($resultData);
                 });
                 $resultSet->method('num_fields')->willReturnCallback(function () use ($index, $resultData) {
-                    return count($resultData[$index]);
+                    return \count($resultData[$index]);
                 });
                 $resultSet->method('fetch_field')->willReturnCallback(function ($field) use ($index, $resultData) {
-                    $data = array_values($resultData[$index]);
+                    $data = \array_values($resultData[$index]);
                     return $data[$field];
                 });
                 $resultSet->method('data_seek')->willReturnCallback(function ($newIndex) use (&$index, $resultData) {
@@ -181,18 +181,18 @@ class ColorTest extends TestCase
             [
                 'expected' => [6, 12, 11, 10, 9, 7, 8, 5, 4, 3, 2, 1],
                 'data'     => [
-                    ['id' => 1, 'color' => serialize(['fafa05', ''])],
-                    ['id' => 2, 'color' => serialize(['fa8405', ''])],
-                    ['id' => 3, 'color' => serialize(['f605fa', ''])],
-                    ['id' => 4, 'color' => serialize(['fa053a', '80'])],
-                    ['id' => 5, 'color' => serialize(['fa053a', '20'])],
-                    ['id' => 6, 'color' => serialize(['', ''])],
-                    ['id' => 7, 'color' => serialize(['333', ''])],
-                    ['id' => 8, 'color' => serialize(['333333', ''])],
-                    ['id' => 9, 'color' => serialize(['05fafa', ''])],
-                    ['id' => 10, 'color' => serialize(['05fa63', ''])],
-                    ['id' => 11, 'color' => serialize(['0511fa', ''])],
-                    ['id' => 12, 'color' => serialize(['000000', ''])],
+                    ['id' => 1, 'color' => \serialize(['fafa05', ''])],
+                    ['id' => 2, 'color' => \serialize(['fa8405', ''])],
+                    ['id' => 3, 'color' => \serialize(['f605fa', ''])],
+                    ['id' => 4, 'color' => \serialize(['fa053a', '80'])],
+                    ['id' => 5, 'color' => \serialize(['fa053a', '20'])],
+                    ['id' => 6, 'color' => \serialize(['', ''])],
+                    ['id' => 7, 'color' => \serialize(['333', ''])],
+                    ['id' => 8, 'color' => \serialize(['333333', ''])],
+                    ['id' => 9, 'color' => \serialize(['05fafa', ''])],
+                    ['id' => 10, 'color' => \serialize(['05fa63', ''])],
+                    ['id' => 11, 'color' => \serialize(['0511fa', ''])],
+                    ['id' => 12, 'color' => \serialize(['000000', ''])],
                 ]
             ]
         ];
@@ -220,9 +220,9 @@ class ColorTest extends TestCase
             'en',
             'en',
             $this->mockDatabase(
-                sprintf(
+                \sprintf(
                     'SELECT id, color FROM mm_unittest WHERE id IN (%s);',
-                    implode(',', array_fill(0, count($ids), '?'))
+                    \implode(',', \array_fill(0, \count($ids), '?'))
                 ),
                 $data
             )
@@ -255,9 +255,9 @@ class ColorTest extends TestCase
             'en',
             'en',
             $this->mockDatabase(
-                sprintf(
+                \sprintf(
                     'SELECT id, color FROM mm_unittest WHERE id IN (%s);',
-                    implode(',', array_fill(0, count($ids), '?'))
+                    \implode(',', \array_fill(0, \count($ids), '?'))
                 ),
                 $data
             )
@@ -265,6 +265,6 @@ class ColorTest extends TestCase
 
         $color = new Color($metaModel, ['colname' => 'color']);
 
-        $this->assertEquals(array_reverse($expected), $color->sortIds($ids, 'DESC'));
+        $this->assertEquals(\array_reverse($expected), $color->sortIds($ids, 'DESC'));
     }
 }

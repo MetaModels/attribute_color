@@ -45,7 +45,7 @@ class Color extends BaseSimple
      */
     public function getAttributeSettingNames()
     {
-        return array_merge(
+        return \array_merge(
             parent::getAttributeSettingNames(),
             [
                 'flag',
@@ -86,7 +86,7 @@ class Color extends BaseSimple
         $column = $this->getColName();
         $values = $this->getMetaModel()->getServiceContainer()->getDatabase()
             ->prepare(
-                sprintf(
+                \sprintf(
                     'SELECT id, %s FROM %s WHERE id IN (%s);',
                     $column,
                     $this->getMetaModel()->getTableName(),
@@ -102,7 +102,7 @@ class Color extends BaseSimple
 
         $sorted = $this->colorSort($idList, ('DESC' === $strDirection));
 
-        return array_values($sorted);
+        return \array_values($sorted);
     }
 
     /**
@@ -120,16 +120,16 @@ class Color extends BaseSimple
         $sorted  = [];
         foreach ($colors as $itemId => $colorValue) {
             $colorVal = $this->convertColorToSortValue($colorValue[0]);
-            $colorSat = str_pad($colorValue[1], 3, '0', STR_PAD_LEFT);
+            $colorSat = \str_pad($colorValue[1], 3, '0', STR_PAD_LEFT);
 
             $sorted['_' . $colorVal . $colorSat . $counter] = $itemId;
             $counter++;
         }
 
         if ($descending) {
-            krsort($sorted);
+            \krsort($sorted);
         } else {
-            ksort($sorted);
+            \ksort($sorted);
         }
 
         return $sorted;
@@ -145,15 +145,15 @@ class Color extends BaseSimple
     private function convertColorToSortValue($colorValue)
     {
         // Space is ASC 0x20 and is before '0' (which has ASC 0x30)
-        if (strlen($colorValue) == 0) {
+        if (\strlen($colorValue) == 0) {
             return '     ';
         }
 
-        if (strlen($colorValue) == 6) {
+        if (\strlen($colorValue) == 6) {
             $colorValue = $colorValue[0] . $colorValue[2] . $colorValue[4];
         }
 
-        return str_pad(hexdec($colorValue), 5, '0', STR_PAD_LEFT);
+        return \str_pad(\hexdec($colorValue), 5, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -169,7 +169,7 @@ class Color extends BaseSimple
             return ['', ''];
         }
 
-        return unserialize($value);
+        return \unserialize($value);
     }
 
     /**
@@ -185,6 +185,6 @@ class Color extends BaseSimple
             return null;
         }
 
-        return serialize($value);
+        return \serialize($value);
     }
 }
