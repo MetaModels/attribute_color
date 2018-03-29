@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_color.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,8 @@
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Cliff Parnitzky <github@cliff-parnitzky.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -46,20 +47,20 @@ class Color extends BaseSimple
     {
         return array_merge(
             parent::getAttributeSettingNames(),
-            array(
+            [
                 'flag',
                 'searchable',
                 'filterable',
                 'sortable',
                 'mandatory'
-            )
+            ]
         );
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getFieldDefinition($arrOverrides = array())
+    public function getFieldDefinition($arrOverrides = [])
     {
         $arrFieldDef = parent::getFieldDefinition($arrOverrides);
 
@@ -94,7 +95,7 @@ class Color extends BaseSimple
             )
             ->execute($idList);
 
-        $idList = array();
+        $idList = [];
         while ($values->next()) {
             $idList[$values->id] = $this->unserializeData($values->$column);
         }
@@ -116,7 +117,7 @@ class Color extends BaseSimple
     private function colorSort($colors, $descending)
     {
         $counter = 0;
-        $sorted  = array();
+        $sorted  = [];
         foreach ($colors as $itemId => $colorValue) {
             $colorVal = $this->convertColorToSortValue($colorValue[0]);
             $colorSat = str_pad($colorValue[1], 3, '0', STR_PAD_LEFT);
@@ -165,7 +166,7 @@ class Color extends BaseSimple
     public function unserializeData($value)
     {
         if (null === $value) {
-            return array('', '');
+            return ['', ''];
         }
 
         return unserialize($value);

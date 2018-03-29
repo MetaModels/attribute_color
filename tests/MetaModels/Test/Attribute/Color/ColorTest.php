@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_color.
  *
- * (c) 2012-2016 The MetaModels team.
+ * (c) 2012-2018 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,8 @@
  * @package    MetaModels
  * @subpackage AttributeColor
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
- * @copyright  2012-2016 The MetaModels team.
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2018 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0
  * @filesource
  */
@@ -44,14 +45,14 @@ class ColorTest extends TestCase
         $mockDb = $this
             ->getMockBuilder('Contao\Database')
             ->disableOriginalConstructor()
-            ->setMethods(array('__destruct'))
+            ->setMethods(['__destruct'])
             ->getMockForAbstractClass();
 
         $mockDb->method('createStatement')->willReturn(
             $statement = $this
                 ->getMockBuilder('Contao\Database\Statement')
                 ->disableOriginalConstructor()
-                ->setMethods(array('debugQuery', 'createResult'))
+                ->setMethods(['debugQuery', 'createResult'])
                 ->getMockForAbstractClass()
         );
 
@@ -68,7 +69,7 @@ class ColorTest extends TestCase
             ->willReturnArgument(0);
 
         if ($result === null) {
-            $result = array('ignored');
+            $result = ['ignored'];
         } else {
             $result = (object) $result;
         }
@@ -173,25 +174,25 @@ class ColorTest extends TestCase
      */
     public function provideSortArray()
     {
-        return array(
-            array(
-                'expected' => array(6, 12, 11, 10, 9, 7, 8, 5, 4, 3, 2, 1),
-                'data'     => array(
-                    array('id' => 1, 'color' => serialize(array('fafa05', ''))),
-                    array('id' => 2, 'color' => serialize(array('fa8405', ''))),
-                    array('id' => 3, 'color' => serialize(array('f605fa', ''))),
-                    array('id' => 4, 'color' => serialize(array('fa053a', '80'))),
-                    array('id' => 5, 'color' => serialize(array('fa053a', '20'))),
-                    array('id' => 6, 'color' => serialize(array('', ''))),
-                    array('id' => 7, 'color' => serialize(array('333', ''))),
-                    array('id' => 8, 'color' => serialize(array('333333', ''))),
-                    array('id' => 9, 'color' => serialize(array('05fafa', ''))),
-                    array('id' => 10, 'color' => serialize(array('05fa63', ''))),
-                    array('id' => 11, 'color' => serialize(array('0511fa', ''))),
-                    array('id' => 12, 'color' => serialize(array('000000', ''))),
-                )
-            )
-        );
+        return [
+            [
+                'expected' => [6, 12, 11, 10, 9, 7, 8, 5, 4, 3, 2, 1],
+                'data'     => [
+                    ['id' => 1, 'color' => serialize(['fafa05', ''])],
+                    ['id' => 2, 'color' => serialize(['fa8405', ''])],
+                    ['id' => 3, 'color' => serialize(['f605fa', ''])],
+                    ['id' => 4, 'color' => serialize(['fa053a', '80'])],
+                    ['id' => 5, 'color' => serialize(['fa053a', '20'])],
+                    ['id' => 6, 'color' => serialize(['', ''])],
+                    ['id' => 7, 'color' => serialize(['333', ''])],
+                    ['id' => 8, 'color' => serialize(['333333', ''])],
+                    ['id' => 9, 'color' => serialize(['05fafa', ''])],
+                    ['id' => 10, 'color' => serialize(['05fa63', ''])],
+                    ['id' => 11, 'color' => serialize(['0511fa', ''])],
+                    ['id' => 12, 'color' => serialize(['000000', ''])],
+                ]
+            ]
+        ];
     }
 
     /**
@@ -207,7 +208,7 @@ class ColorTest extends TestCase
      */
     public function testSortAsc($expected, $data)
     {
-        $ids = array();
+        $ids = [];
         foreach ($data as $item) {
             $ids[] = $item['id'];
         }
@@ -224,7 +225,7 @@ class ColorTest extends TestCase
             )
         );
 
-        $color = new Color($metaModel, array('colname' => 'color'));
+        $color = new Color($metaModel, ['colname' => 'color']);
 
         $this->assertEquals($expected, $color->sortIds($ids, 'ASC'));
     }
@@ -242,7 +243,7 @@ class ColorTest extends TestCase
      */
     public function testSortDesc($expected, $data)
     {
-        $ids = array();
+        $ids = [];
         foreach ($data as $item) {
             $ids[] = $item['id'];
         }
@@ -259,7 +260,7 @@ class ColorTest extends TestCase
             )
         );
 
-        $color = new Color($metaModel, array('colname' => 'color'));
+        $color = new Color($metaModel, ['colname' => 'color']);
 
         $this->assertEquals(array_reverse($expected), $color->sortIds($ids, 'DESC'));
     }
