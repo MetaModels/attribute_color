@@ -25,6 +25,7 @@ use MetaModels\Attribute\IAttributeTypeFactory;
 use MetaModels\Attribute\Color\AttributeTypeFactory;
 use MetaModels\IMetaModel;
 use MetaModels\Test\Attribute\AttributeTypeFactoryTest;
+use MetaModels\Attribute\Color\Color;
 
 /**
  * Test the attribute factory.
@@ -46,7 +47,7 @@ class ColorAttributeTypeFactoryTest extends AttributeTypeFactoryTest
      */
     protected function mockMetaModel($tableName, $language, $fallbackLanguage)
     {
-        $metaModel = $this->getMockBuilder('MetaModels\IMetaModel')->getMockForAbstractClass();
+        $metaModel = $this->getMockBuilder(IMetaModel::class)->getMockForAbstractClass();
 
         $metaModel
             ->expects($this->any())
@@ -89,6 +90,6 @@ class ColorAttributeTypeFactoryTest extends AttributeTypeFactoryTest
             $this->mockMetaModel('mm_test', 'de', 'en')
         );
 
-        $this->assertInstanceOf('MetaModels\Attribute\Color\Color', $attribute);
+        $this->assertInstanceOf(Color::class, $attribute);
     }
 }

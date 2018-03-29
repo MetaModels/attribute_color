@@ -25,6 +25,9 @@ use Contao\Database;
 use MetaModels\Attribute\Color\Color;
 use MetaModels\MetaModelsServiceContainer;
 use PHPUnit\Framework\TestCase;
+use Contao\Database\Statement;
+use Contao\Database\Result;
+use MetaModels\IMetaModel;
 
 /**
  * Unit tests to test class Color.
@@ -43,14 +46,14 @@ class ColorTest extends TestCase
     private function mockDatabase($expectedQuery = '', $result = null)
     {
         $mockDb = $this
-            ->getMockBuilder('Contao\Database')
+            ->getMockBuilder(Database::class)
             ->disableOriginalConstructor()
             ->setMethods(['__destruct'])
             ->getMockForAbstractClass();
 
         $mockDb->method('createStatement')->willReturn(
             $statement = $this
-                ->getMockBuilder('Contao\Database\Statement')
+                ->getMockBuilder(Statement::class)
                 ->disableOriginalConstructor()
                 ->setMethods(['debugQuery', 'createResult'])
                 ->getMockForAbstractClass()
@@ -82,7 +85,7 @@ class ColorTest extends TestCase
                 $resultData = (array) $resultData;
 
                 $resultSet = $this
-                    ->getMockBuilder('Contao\Database\Result')
+                    ->getMockBuilder(Result::class)
                     ->disableOriginalConstructor()
                     ->getMockForAbstractClass();
 
@@ -129,7 +132,7 @@ class ColorTest extends TestCase
      */
     protected function mockMetaModel($language, $fallbackLanguage, $database)
     {
-        $metaModel = $this->getMockBuilder('MetaModels\IMetaModel')->getMockForAbstractClass();
+        $metaModel = $this->getMockBuilder(IMetaModel::class)->getMockForAbstractClass();
 
         $metaModel
             ->expects($this->any())
@@ -164,7 +167,7 @@ class ColorTest extends TestCase
     public function testInstantiation()
     {
         $text = new Color($this->mockMetaModel('en', 'en', $this->mockDatabase()));
-        $this->assertInstanceOf('MetaModels\Attribute\Color\Color', $text);
+        $this->assertInstanceOf(Color::class, $text);
     }
 
     /**
