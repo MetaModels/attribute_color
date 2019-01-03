@@ -28,8 +28,6 @@ use MetaModels\Attribute\Color\Color;
 
 /**
  * Test the attribute factory.
- *
- * @package MetaModels\Test\Filter\Setting
  */
 class ColorAttributeTypeFactoryTest extends AttributeTypeFactoryTest
 {
