@@ -8,7 +8,7 @@
     "color",
     "nontranslatable"
   ],
-  "type": "contao-module",
+  "type": "contao-bundle",
   "homepage": "http://now.metamodel.me/",
   "license": "LGPL-3.0-or-later",
   "authors": [
