@@ -3,19 +3,19 @@
 /**
  * This file is part of MetaModels/attribute_color.
  *
- * (c) 2012-2017 The MetaModels team.
+ * (c) 2012-2019 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * This project is provided in good faith and hope to be usable by anyone.
  *
- * @package    MetaModels
- * @subpackage AttributeColor
+ * @package    MetaModels/attribute_color
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  2012-2017 The MetaModels team.
- * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2019 The MetaModels team.
+ * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
@@ -31,8 +31,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Test the attribute factory.
- *
- * @package MetaModels\Test\Filter\Setting
  */
 class ColorAttributeTypeFactoryTest extends TestCase
 {
@@ -49,7 +47,7 @@ class ColorAttributeTypeFactoryTest extends TestCase
      */
     protected function mockMetaModel($tableName, $language, $fallbackLanguage)
     {
-        $metaModel = $this->getMockForAbstractClass('MetaModels\IMetaModel');
+        $metaModel = $this->getMockBuilder(IMetaModel::class)->getMockForAbstractClass();
 
         $metaModel
             ->expects($this->any())
@@ -105,7 +103,7 @@ class ColorAttributeTypeFactoryTest extends TestCase
         $connection  = $this->mockConnection();
         $manipulator = $this->mockTableManipulator($connection);
 
-        return array(new AttributeTypeFactory($connection, $manipulator));
+        return [new AttributeTypeFactory($connection, $manipulator)];
     }
 
     /**
@@ -120,7 +118,7 @@ class ColorAttributeTypeFactoryTest extends TestCase
 
         $factory   = new AttributeTypeFactory($connection, $manipulator);
         $attribute = $factory->createInstance(
-            array(),
+            [],
             $this->mockMetaModel('mm_test', 'de', 'en')
         );
 

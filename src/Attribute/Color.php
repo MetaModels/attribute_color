@@ -3,23 +3,23 @@
 /**
  * This file is part of MetaModels/attribute_color.
  *
- * (c) 2012-2017 The MetaModels team.
+ * (c) 2012-2019 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * This project is provided in good faith and hope to be usable by anyone.
  *
- * @package    MetaModels
- * @subpackage AttributeColor
+ * @package    MetaModels/attribute_color
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @author     Andreas Isaak <info@andreas-isaak.de>
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Cliff Parnitzky <github@cliff-parnitzky.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
- * @copyright  2012-2017 The MetaModels team.
- * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0
+ * @author     Sven Baumann <baumann.sv@gmail.com>
+ * @copyright  2012-2019 The MetaModels team.
+ * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
@@ -45,22 +45,22 @@ class Color extends BaseSimple
      */
     public function getAttributeSettingNames()
     {
-        return array_merge(
+        return \array_merge(
             parent::getAttributeSettingNames(),
-            array(
+            [
                 'flag',
                 'searchable',
                 'filterable',
                 'sortable',
                 'mandatory'
-            )
+            ]
         );
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getFieldDefinition($arrOverrides = array())
+    public function getFieldDefinition($arrOverrides = [])
     {
         $arrFieldDef = parent::getFieldDefinition($arrOverrides);
 
@@ -92,14 +92,14 @@ class Color extends BaseSimple
             ->setParameter('ids', $idList)
             ->execute();
 
-        $idList = array();
+        $idList = [];
         while ($values = $statement->fetch(\PDO::FETCH_OBJ)) {
             $idList[$values->id] = $this->unserializeData($values->$column);
         }
 
         $sorted = $this->colorSort($idList, ('DESC' === $strDirection));
 
-        return array_values($sorted);
+        return \array_values($sorted);
     }
 
     /**
@@ -114,19 +114,19 @@ class Color extends BaseSimple
     private function colorSort($colors, $descending)
     {
         $counter = 0;
-        $sorted  = array();
+        $sorted  = [];
         foreach ($colors as $itemId => $colorValue) {
             $colorVal = $this->convertColorToSortValue($colorValue[0]);
-            $colorSat = str_pad($colorValue[1], 3, '0', STR_PAD_LEFT);
+            $colorSat = \str_pad($colorValue[1], 3, '0', STR_PAD_LEFT);
 
             $sorted['_' . $colorVal . $colorSat . $counter] = $itemId;
             $counter++;
         }
 
         if ($descending) {
-            krsort($sorted);
+            \krsort($sorted);
         } else {
-            ksort($sorted);
+            \ksort($sorted);
         }
 
         return $sorted;
@@ -142,15 +142,15 @@ class Color extends BaseSimple
     private function convertColorToSortValue($colorValue)
     {
         // Space is ASC 0x20 and is before '0' (which has ASC 0x30)
-        if (strlen($colorValue) == 0) {
+        if (\strlen($colorValue) == 0) {
             return '     ';
         }
 
-        if (strlen($colorValue) == 6) {
+        if (\strlen($colorValue) == 6) {
             $colorValue = $colorValue[0] . $colorValue[2] . $colorValue[4];
         }
 
-        return str_pad(hexdec($colorValue), 5, '0', STR_PAD_LEFT);
+        return \str_pad(\hexdec($colorValue), 5, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -163,10 +163,10 @@ class Color extends BaseSimple
     public function unserializeData($value)
     {
         if (null === $value) {
-            return array('', '');
+            return ['', ''];
         }
 
-        return unserialize($value);
+        return \unserialize($value);
     }
 
     /**
@@ -182,6 +182,6 @@ class Color extends BaseSimple
             return null;
         }
 
-        return serialize($value);
+        return \serialize($value);
     }
 }
