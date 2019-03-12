@@ -12,30 +12,14 @@
  *
  * @package    MetaModels/attribute_color
  * @author     Christian Schiffler <c.schiffler@cyberspectrum.de>
+ * @author     Andreas Isaak <info@andreas-isaak.de>
+ * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
-namespace MetaModels\Attribute\Color;
-
-use MetaModels\Attribute\AbstractAttributeTypeFactory;
-
-/**
- * Attribute type factory for color attributes.
- */
-class AttributeTypeFactory extends AbstractAttributeTypeFactory
-{
-    /**
-     * {@inheritDoc}
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->typeName  = 'color';
-        $this->typeIcon  = 'system/modules/metamodelsattribute_color/html/color.png';
-        $this->typeClass = Color::class;
-    }
-}
+$GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['color extends _simpleattribute_'] = [
+    '-advanced' => ['isunique']
+];

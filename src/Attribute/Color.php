@@ -16,13 +16,14 @@
  * @author     Stefan Heimes <stefan_heimes@hotmail.com>
  * @author     Cliff Parnitzky <github@cliff-parnitzky.de>
  * @author     Ingolf Steinhardt <info@e-spin.de>
+ * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @copyright  2012-2019 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
 
-namespace MetaModels\Attribute\Color;
+namespace MetaModels\AttributeColorBundle\Attribute;
 
 use MetaModels\Attribute\BaseSimple;
 
@@ -82,20 +83,17 @@ class Color extends BaseSimple
      */
     public function sortIds($idList, $strDirection)
     {
-        $column = $this->getColName();
-        $values = $this->getMetaModel()->getServiceContainer()->getDatabase()
-            ->prepare(
-                \sprintf(
-                    'SELECT id, %s FROM %s WHERE id IN (%s);',
-                    $column,
-                    $this->getMetaModel()->getTableName(),
-                    $this->parameterMask($idList)
-                )
-            )
-            ->execute($idList);
+        $column    = $this->getColName();
+        $statement = $this->connection->createQueryBuilder()
+            ->select('id')
+            ->addSelect($column)
+            ->from($this->getMetaModel()->getTableName())
+            ->where('id IN (:ids)')
+            ->setParameter('ids', $idList)
+            ->execute();
 
         $idList = [];
-        while ($values->next()) {
+        while ($values = $statement->fetch(\PDO::FETCH_OBJ)) {
             $idList[$values->id] = $this->unserializeData($values->$column);
         }
 
