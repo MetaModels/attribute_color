@@ -85,10 +85,10 @@ class Color extends BaseSimple
     {
         $column    = $this->getColName();
         $statement = $this->connection->createQueryBuilder()
-            ->select('id')
-            ->addSelect($column)
-            ->from($this->getMetaModel()->getTableName())
-            ->where('id IN (:ids)')
+            ->select('t.id')
+            ->addSelect('t.' . $column)
+            ->from($this->getMetaModel()->getTableName(), 't')
+            ->where('t.id IN (:ids)')
             ->setParameter('ids', $idList)
             ->execute();
 
