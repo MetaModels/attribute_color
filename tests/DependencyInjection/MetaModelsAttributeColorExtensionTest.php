@@ -29,6 +29,8 @@ use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 /**
  * This test case test the extension.
+ *
+ * @covers \MetaModels\AttributeColorBundle\DependencyInjection\MetaModelsAttributeColorExtension
  */
 class MetaModelsAttributeColorExtensionTest extends TestCase
 {

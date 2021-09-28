@@ -31,6 +31,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Test the attribute factory.
+ *
+ * @covers \MetaModels\AttributeColorBundle\Attribute\AttributeTypeFactory
  */
 class ColorAttributeTypeFactoryTest extends TestCase
 {

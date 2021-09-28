@@ -30,6 +30,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests to test class Color.
+ *
+ * @covers \MetaModels\AttributeColorBundle\Attribute\Color
  */
 class ColorTest extends TestCase
 {
