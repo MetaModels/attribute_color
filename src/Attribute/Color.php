@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_color.
  *
- * (c) 2012-2019 The MetaModels team.
+ * (c) 2012-2022 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,7 +18,7 @@
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2019 The MetaModels team.
+ * @copyright  2012-2022 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -71,7 +71,7 @@ class Color extends BaseSimple
         $arrFieldDef['eval']['colorpicker']    = empty($arrFieldDef['eval']['readonly']);
         $arrFieldDef['eval']['isHexColor']     = true;
         $arrFieldDef['eval']['decodeEntities'] = true;
-        $arrFieldDef['eval']['tl_class']      .= ' wizard inline';
+        $arrFieldDef['eval']['tl_class']       = ($arrFieldDef['eval']['tl_class']?? '') . ' wizard inline';
 
         return $arrFieldDef;
     }
