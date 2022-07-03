@@ -93,8 +93,8 @@ class Color extends BaseSimple
             ->execute();
 
         $idList = [];
-        while ($values = $statement->fetch(\PDO::FETCH_OBJ)) {
-            $idList[$values->id] = $this->unserializeData($values->$column);
+        while ($values = $statement->fetchAssociative()) {
+            $idList[$values['id']] = $this->unserializeData($values[$column]);
         }
 
         $sorted = $this->colorSort($idList, ('DESC' === $strDirection));
