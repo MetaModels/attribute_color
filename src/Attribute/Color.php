@@ -178,7 +178,7 @@ class Color extends BaseSimple
      */
     public function serializeData($value)
     {
-        if (!($value[0] || $value[1])) {
+        if (empty($value) || !($value[0] || $value[1])) {
             return null;
         }
 
