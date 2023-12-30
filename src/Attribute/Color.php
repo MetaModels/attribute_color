@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_color.
  *
- * (c) 2012-2022 The MetaModels team.
+ * (c) 2012-2023 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,7 +18,7 @@
  * @author     Ingolf Steinhardt <info@e-spin.de>
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
- * @copyright  2012-2022 The MetaModels team.
+ * @copyright  2012-2023 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -71,7 +71,7 @@ class Color extends BaseSimple
         $arrFieldDef['eval']['colorpicker']    = empty($arrFieldDef['eval']['readonly']);
         $arrFieldDef['eval']['isHexColor']     = true;
         $arrFieldDef['eval']['decodeEntities'] = true;
-        $arrFieldDef['eval']['tl_class']       = ($arrFieldDef['eval']['tl_class']?? '') . ' wizard inline';
+        $arrFieldDef['eval']['tl_class']       = ($arrFieldDef['eval']['tl_class'] ?? '') . ' wizard inline';
 
         return $arrFieldDef;
     }
@@ -90,7 +90,7 @@ class Color extends BaseSimple
             ->from($this->getMetaModel()->getTableName(), 't')
             ->where('t.id IN (:ids)')
             ->setParameter('ids', $idList)
-            ->execute();
+            ->executeQuery();
 
         $idList = [];
         while ($values = $statement->fetchAssociative()) {
@@ -106,7 +106,6 @@ class Color extends BaseSimple
      * Sort a list of values by color value.
      *
      * @param array $colors     The colors to sort, indexed by item id.
-     *
      * @param bool  $descending The sort direction, true if descending, false if ascending.
      *
      * @return array
@@ -142,15 +141,15 @@ class Color extends BaseSimple
     private function convertColorToSortValue($colorValue)
     {
         // Space is ASC 0x20 and is before '0' (which has ASC 0x30)
-        if (\strlen($colorValue) == 0) {
+        if (\strlen($colorValue) === 0) {
             return '     ';
         }
 
-        if (\strlen($colorValue) == 6) {
+        if (\strlen($colorValue) === 6) {
             $colorValue = $colorValue[0] . $colorValue[2] . $colorValue[4];
         }
 
-        return \str_pad(\hexdec($colorValue), 5, '0', STR_PAD_LEFT);
+        return \str_pad((string) \hexdec($colorValue), 5, '0', STR_PAD_LEFT);
     }
 
     /**
