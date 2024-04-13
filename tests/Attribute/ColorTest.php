@@ -3,7 +3,7 @@
 /**
  * This file is part of MetaModels/attribute_color.
  *
- * (c) 2012-2022 The MetaModels team.
+ * (c) 2012-2024 The MetaModels team.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,7 +15,7 @@
  * @author     David Molineus <david.molineus@netzmacht.de>
  * @author     Sven Baumann <baumann.sv@gmail.com>
  * @author     Ingolf Steinhardt <info@e-spin.de>
- * @copyright  2012-2022 The MetaModels team.
+ * @copyright  2012-2024 The MetaModels team.
  * @license    https://github.com/MetaModels/attribute_color/blob/master/LICENSE LGPL-3.0-or-later
  * @filesource
  */
@@ -25,8 +25,10 @@ namespace MetaModels\AttributeColorBundle\Test\Attribute;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Result;
 use MetaModels\AttributeColorBundle\Attribute\Color;
 use MetaModels\Helper\TableManipulator;
+use MetaModels\IMetaModel;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -40,29 +42,28 @@ class ColorTest extends TestCase
      * Mock a MetaModel.
      *
      * @param string   $language         The language.
-     *
      * @param string   $fallbackLanguage The fallback language.
      *
      * @return \MetaModels\IMetaModel
      */
     protected function mockMetaModel($language, $fallbackLanguage)
     {
-        $metaModel = $this->getMockForAbstractClass('MetaModels\IMetaModel');
+        $metaModel = $this->getMockBuilder(IMetaModel::class)->getMock();
 
         $metaModel
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getTableName')
-            ->will($this->returnValue('mm_unittest'));
+            ->willReturn('mm_unittest');
 
         $metaModel
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getActiveLanguage')
-            ->will($this->returnValue($language));
+            ->willReturn($language);
 
         $metaModel
-            ->expects($this->any())
+            ->expects(self::any())
             ->method('getFallbackLanguage')
-            ->will($this->returnValue($fallbackLanguage));
+            ->willReturn($fallbackLanguage);
 
         return $metaModel;
     }
@@ -139,7 +140,6 @@ class ColorTest extends TestCase
      * Test the sorting function in ascending order.
      *
      * @param array $expected The expected result order.
-     *
      * @param array $data     The array to sort.
      *
      * @return void
@@ -152,28 +152,29 @@ class ColorTest extends TestCase
         $return = [];
         foreach ($data as $item) {
             $ids[]    = $item['id'];
-            $return[] = (object) $item;
+            $return[] = $item;
         }
 
         $metaModel    = $this->mockMetaModel('en', 'en');
-        $connection   = $this->mockConnection();
+        $connection   = $this->createMock(Connection::class);
         $manipulator  = $this->mockTableManipulator($connection);
-        $queryBuilder = $this->getMockBuilder(QueryBuilder::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $queryBuilder = $this->createMock(QueryBuilder::class);
 
         $connection
             ->expects($this->once())
             ->method('createQueryBuilder')
             ->willReturn($queryBuilder);
 
-        $statement = $this->getMockBuilder(Statement::class)->getMock();
-        $statement->method('fetch')->willReturnOnConsecutiveCalls(...$return);
+        $result = $this
+            ->getMockBuilder(Result::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $result->method('fetchAssociative')->willReturnOnConsecutiveCalls(...$return);
 
         $queryBuilder
             ->expects($this->once())
-            ->method('execute')
-            ->willReturn($statement);
+            ->method('executeQuery')
+            ->willReturn($result);
 
         foreach (['select', 'addSelect', 'from', 'setParameter', 'where'] as $method) {
             $queryBuilder
@@ -190,7 +191,6 @@ class ColorTest extends TestCase
      * Test the sorting function in decending order.
      *
      * @param array $expected The expected result order.
-     *
      * @param array $data     The array to sort.
      *
      * @return void
@@ -203,28 +203,29 @@ class ColorTest extends TestCase
         $return = [];
         foreach ($data as $item) {
             $ids[]    = $item['id'];
-            $return[] = (object) $item;
+            $return[] = $item;
         }
 
         $metaModel    = $this->mockMetaModel('en', 'en');
-        $connection   = $this->mockConnection();
+        $connection   = $this->createMock(Connection::class);
         $manipulator  = $this->mockTableManipulator($connection);
-        $queryBuilder = $this->getMockBuilder(QueryBuilder::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $queryBuilder = $this->createMock(QueryBuilder::class);
 
         $connection
             ->expects($this->once())
             ->method('createQueryBuilder')
             ->willReturn($queryBuilder);
 
-        $statement = $this->getMockBuilder(Statement::class)->getMock();
-        $statement->method('fetch')->willReturnOnConsecutiveCalls(...$return);
+        $result = $this
+            ->getMockBuilder(Result::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $result->method('fetchAssociative')->willReturnOnConsecutiveCalls(...$return);
 
         $queryBuilder
             ->expects($this->once())
-            ->method('execute')
-            ->willReturn($statement);
+            ->method('executeQuery')
+            ->willReturn($result);
 
         foreach (['select', 'addSelect', 'from', 'setParameter', 'where'] as $method) {
             $queryBuilder
