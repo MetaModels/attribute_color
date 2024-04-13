@@ -25,6 +25,7 @@ namespace MetaModels\AttributeColorBundle\Test\Attribute;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Result;
 use MetaModels\AttributeColorBundle\Attribute\Color;
 use MetaModels\Helper\TableManipulator;
 use MetaModels\IMetaModel;
@@ -151,7 +152,7 @@ class ColorTest extends TestCase
         $return = [];
         foreach ($data as $item) {
             $ids[]    = $item['id'];
-            $return[] = (object) $item;
+            $return[] = $item;
         }
 
         $metaModel    = $this->mockMetaModel('en', 'en');
@@ -164,13 +165,16 @@ class ColorTest extends TestCase
             ->method('createQueryBuilder')
             ->willReturn($queryBuilder);
 
-        $statement = $this->getMockBuilder(Statement::class)->getMock();
-        $statement->method('fetchAssociative')->willReturnOnConsecutiveCalls(...$return);
+        $result = $this
+            ->getMockBuilder(Result::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $result->method('fetchAssociative')->willReturnOnConsecutiveCalls(...$return);
 
         $queryBuilder
             ->expects($this->once())
             ->method('executeQuery')
-            ->willReturn($statement);
+            ->willReturn($result);
 
         foreach (['select', 'addSelect', 'from', 'setParameter', 'where'] as $method) {
             $queryBuilder
@@ -199,7 +203,7 @@ class ColorTest extends TestCase
         $return = [];
         foreach ($data as $item) {
             $ids[]    = $item['id'];
-            $return[] = (object) $item;
+            $return[] = $item;
         }
 
         $metaModel    = $this->mockMetaModel('en', 'en');
@@ -212,13 +216,16 @@ class ColorTest extends TestCase
             ->method('createQueryBuilder')
             ->willReturn($queryBuilder);
 
-        $statement = $this->getMockBuilder(Statement::class)->getMock();
-        $statement->method('fetchAssociative')->willReturnOnConsecutiveCalls(...$return);
+        $result = $this
+            ->getMockBuilder(Result::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $result->method('fetchAssociative')->willReturnOnConsecutiveCalls(...$return);
 
         $queryBuilder
             ->expects($this->once())
             ->method('executeQuery')
-            ->willReturn($statement);
+            ->willReturn($result);
 
         foreach (['select', 'addSelect', 'from', 'setParameter', 'where'] as $method) {
             $queryBuilder
