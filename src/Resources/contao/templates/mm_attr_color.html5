@@ -1,3 +1,1 @@
-<span class="text<?php echo $this->additional_class; ?>">
-    <?php echo $this->raw[0]; ?> <?php echo $this->raw[1]; ?>
-</span>
+<span class="text color<? $this->additional_class ?>"><?= $this->raw[0] ?? '' ?> <?= $this->raw[1] ?? '' ?></span>

@@ -1,1 +1,1 @@
-<?php echo $this->raw[0]; ?> <?php echo $this->raw[1]; ?>
+<?= $this->raw[0] ?? '' ?> <?= $this->raw[1] ?? '' ?>

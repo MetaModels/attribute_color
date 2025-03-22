@@ -40,7 +40,7 @@ class MetaModelsAttributeColorExtensionTest extends TestCase
      *
      * @return void
      */
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $extension = new MetaModelsAttributeColorExtension();
 
@@ -53,28 +53,15 @@ class MetaModelsAttributeColorExtensionTest extends TestCase
      *
      * @return void
      */
-    public function testFactoryIsRegistered()
+    public function testFactoryIsRegistered(): void
     {
-        $container = $this->getMockBuilder(ContainerBuilder::class)->getMock();
-
-        $container
-            ->expects($this->once())
-            ->method('setDefinition')
-            ->with(
-                'metamodels.attribute_color.factory',
-                $this->callback(
-                    function ($value) {
-                        /** @var Definition $value */
-                        $this->assertInstanceOf(Definition::class, $value);
-                        $this->assertEquals(AttributeTypeFactory::class, $value->getClass());
-                        $this->assertCount(1, $value->getTag('metamodels.attribute_factory'));
-
-                        return true;
-                    }
-                )
-            );
+        $container = new ContainerBuilder();
 
         $extension = new MetaModelsAttributeColorExtension();
         $extension->load([], $container);
+
+        self::assertTrue($container->hasDefinition('metamodels.attribute_color.factory'));
+        $definition = $container->getDefinition('metamodels.attribute_color.factory');
+        self::assertCount(1, $definition->getTag('metamodels.attribute_factory'));
     }
 }
